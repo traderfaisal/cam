@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Cam Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        /* Ring Light Animation */
+        .ring-light {
+            border: 4px solid rgba(0, 255, 204, 0.3);
+            box-shadow: 0 0 20px #00ffcc, inset 0 0 20px #00ffcc;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 15px #00ffcc, inset 0 0 15px #00ffcc; }
+            to { box-shadow: 0 0 35px #00ffcc, inset 0 0 30px #00ffcc; }
+        }
+
+        .glass-ui {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        video {
+            transform: scaleX(-1); /* Mirror effect */
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="mb-8 text-center">
+        <h1 class="text-4xl font-bold tracking-widest uppercase mb-2">Cyber-Cam <span class="text-white">v3.0</span></h1>
+        <p class="text-xs opacity-60">SYSTEM STATUS: OPTIMAL | AI INTEGRATION ACTIVE</p>
+    </div>
+
+    <div class="relative group">
+        <div class="ring-light absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[450px] md:h-[450px] rounded-full z-10 pointer-events-none"></div>
+        
+        <div class="relative w-[300px] h-[300px] md:w-[420px] md:h-[420px] rounded-full overflow-hidden border-2 border-[#00ffcc]/30">
+            <video id="video" autoplay playsinline class="w-full h-full"></video>
+            
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#00ffcc]/10 to-transparent h-20 w-full animate-[bounce_3s_infinite] pointer-events-none"></div>
+        </div>
+    </div>
+
+    <div class="mt-10 flex gap-6">
+        <button id="start-btn" class="glass-ui px-8 py-3 rounded-full hover:bg-[#00ffcc] hover:text-black transition-all duration-300 font-bold uppercase tracking-tighter">
+            Open Lens
+        </button>
+        <button id="capture-btn" class="bg-[#00ffcc] text-black px-8 py-3 rounded-full font-bold shadow-[0_0_15px_#00ffcc] hover:scale-105 transition-transform uppercase tracking-tighter">
+            Capture
+        </button>
+    </div>
+
+    <div class="absolute bottom-10 left-10 hidden md:block">
+        <p class="text-[10px] opacity-40">LAT: 23.8103° N <br> LONG: 90.4125° E</p>
+    </div>
+    <div class="absolute top-10 right-10 text-right hidden md:block">
+        <div class="w-32 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div class="bg-[#00ffcc] h-full w-3/4"></div>
+        </div>
+        <p class="text-[10px] mt-1">MEMORY USAGE: 75%</p>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const startBtn = document.getElementById('start-btn');
+        const captureBtn = document.getElementById('capture-btn');
+
+        // Access Camera Function
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 1280, 
+                        height: 720,
+                        facingMode: "user" 
+                    } 
+                });
+                video.srcObject = stream;
+                startBtn.innerText = "Active";
+                startBtn.classList.add('opacity-50', 'pointer-events-none');
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Camera access denied or not available.");
+            }
+        }
+
+        startBtn.addEventListener('click', startCamera);
+
+        captureBtn.addEventListener('click', () => {
+            alert("Capture Successful! Image saved to database.");
+        });
+    </script>
+</body>
+</html>
